@@ -1,3 +1,10 @@
+/**
+ * The updated version of the exhaustive algorithm is to 
+ * store some intermediate calculation to save time.
+ * 
+ **/
+
+
 #include <iostream>
 #include <fstream>
 #include <string>

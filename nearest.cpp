@@ -43,8 +43,8 @@ static vector<point> pts;
 static float traveledDistance = 0;
 
 
-void ReadFile(){
-        ifstream input_file("input.txt");
+void ReadFile(string file_name){
+        ifstream input_file(file_name);
         if(!input_file.is_open()){
             cout << "The file is not existed. Please check the input file name." << endl;
             exit(0);
@@ -105,7 +105,7 @@ bool unvisitedPoint(){
 }
 
 int main(int argc, char* argv[]){
-    ReadFile();
+    ReadFile(argv[1]);
     /*
     cout << "The input points are: " << endl;
     for(int i = 0; i < pts.size(); i++){

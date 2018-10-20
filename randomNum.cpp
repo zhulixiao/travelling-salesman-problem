@@ -10,7 +10,7 @@ int main (int argc, char* argv[]){
     cout << "The size is: ";
     cin >> size;
     ofstream output_file;
-    output_file.open("input.txt");
+    output_file.open(argv[1]);
     output_file << size;
     output_file << "\n";
 
