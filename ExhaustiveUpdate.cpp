@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>
 #include "math.h"
 using namespace std;
 
@@ -49,7 +50,14 @@ class point{
     bool _visited = false;
 };
 
+// A basic data structure to store given points
 static vector<point> pts;
+// A 2D vector to store distance calculation between different points
+static vector<vector<float>> distance_pts;
+// A map to store distance calculation between different routes
+static map<int,float> distance_map;
+// Number of given pts
+static int num_pts = -1;
 
 void ReadFile(string file_name){
         ifstream input_file(file_name);
@@ -59,6 +67,7 @@ void ReadFile(string file_name){
         } else {
             int num;
             input_file >> num;
+            num_pts = num;
             for(int i = 0; i < num; i++){
                 int x;
                 input_file >> x;
@@ -74,8 +83,8 @@ void ReadFile(string file_name){
 
 float CalcDist(point &ptr1, point &ptr2){
     int x1 = ptr1.getX();
-    int y1 = ptr1.getY();
     int x2 = ptr2.getX();
+    int y1 = ptr1.getY();
     int y2 = ptr2.getY();
 
     float xDist = (x1 - x2)*(x1 - x2);
@@ -84,10 +93,56 @@ float CalcDist(point &ptr1, point &ptr2){
     return distance;
 }
 
+void StoreDist(){
+
+    // Initialize the 2d vector
+    for(int i = 0; i < num_pts; i++){
+        vector<float> temp_vec;
+        for(int j = 0; j < num_pts; j++){
+            temp_vec.push_back(0);
+        }
+        distance_pts.push_back(temp_vec);
+    }
+
+    for(int i = 0; i < (int)distance_pts.size(); i++){
+        for(int j = 0; j < (int)distance_pts.size(); j++){
+            // Same point
+            if(i == j) continue;
+            // Already know
+            if(distance_pts.at(i).at(j) != 0) continue;
+
+            float temp_dis = CalcDist(pts[i],pts[j]);
+            distance_pts.at(i).at(j) = distance_pts.at(j).at(i) = temp_dis;
+        }
+    }
+
+// Uncomment the next block of code to check if the stored value are correct.
+/*
+    for(int i = 0; i < (int)distance_pts.size(); i++){
+        for(int j = 0; j < (int)distance_pts.size(); j++){
+            cout << distance_pts.at(i).at(j) << " ";
+        }
+        cout << endl;
+    }
+*/
+}
+
+
+
+
 float traveledDistance(vector<int> &route) {
-    float distance = CalcDist(pts[route[0]],pts[route[route.size()-1]]);
-    for(int i = 1; i < route.size(); i++){
-        distance += CalcDist(pts[route[i-1]],pts[route[i]]); 
+    float distance = 0;
+
+    // Check if the same route is calculated
+    for(int i = (route.size() - 4); i > 1; i--){
+        int temp_route;
+        for(int j = 0; i < )
+
+    }
+
+    
+    for(int i = 0; i < (route.size() - 1); i++){
+        distance += distance_pts[route.at(i)][route.at(i+1)];
     }
     return distance;
 }
@@ -111,13 +166,15 @@ void BruteForce(){
             traveled_distance = temp;
             bestRoute = route;
             cout << "The best travel distance for now is: " << traveled_distance << endl;
+            
+            /*
             cout << "The current best route is: ";
             
             for(int i = 0; i < bestRoute.size(); i++){
                 cout << bestRoute[i] << " ";
             }
             cout << endl;
-            
+            */
         }
     }
 
@@ -134,6 +191,8 @@ void BruteForce(){
 
 int main(int argc, char* argv[]){
     ReadFile(argv[1]);
+
+    /*
     cout << "The input points are: " << endl;
     for(int i = 0; i < pts.size(); i++){
         int x = pts.at(i).getX();
@@ -141,9 +200,12 @@ int main(int argc, char* argv[]){
         int id = pts.at(i).getID();
         cout << "Position: " << x << " " << y << " ID: " << id << endl;
     }
+    */
+
     cout << endl;
     clock_t initT;
     initT = clock();
+    StoreDist();
     BruteForce();
     clock_t t = clock() - initT;
     double time = (double)t/CLOCKS_PER_SEC;
